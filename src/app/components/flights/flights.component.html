@@ -1,0 +1,84 @@
+<app-search-bar parent="flights"></app-search-bar>
+<div class="fluid-container">
+  <div class="flightsTotal"
+    *ngIf="flightRetDetails && flightRetDetails.length !== 0">
+    <div class="from">{{ flightDetails[0].origin }}</div>
+    <div class="to">{{ flightRetDetails[0].origin }}</div>
+    <div class="price">Rs.{{fares[0]+fares[1]}}</div>
+    <button class="btn btn-warning"
+      (click)='onBook()'
+      [disabled]="(flightsIndices[0] === -1 || flightsIndices[1] === -1) ? true : false"
+    >BOOK</button>
+  </div>
+
+  <div class="sortContainer"
+    *ngIf="flightDetails && flightDetails.length !== 0"
+    [ngClass]="{ 'two-way': flightRetDetails && flightRetDetails.length !== 0 }">
+    <div class="sortColumns">
+      <a *ngFor="let sortCol of sortCols"
+        (click)="onSort($event)">{{ sortCol }}</a>
+    </div>
+    <div class="sortColumns return"
+      *ngIf="flightRetDetails && flightRetDetails.length !== 0">
+      <a *ngFor="let sortCol of sortCols"
+        (click)="onSort($event)">{{ sortCol }}</a>
+    </div>
+  </div>
+<!-- TODO: use camelCase for variable names-->
+  <div class="flightsContainer"
+    [ngClass]="{ 'two-way': flightRetDetails && flightRetDetails.length !== 0 }">
+    <div class="flightsDet">
+      <div class="flight"
+        *ngFor="let flight of flightDetails | sort:sortCol:sortDir; let i = index">
+        <div class="brand"> {{ flight.ibibopartner | uppercaseCus }} </div>
+        <div class="src">
+          <span class="place"> {{ flight.origin }} </span>
+          <span class="time">{{ flight.deptime }}</span>
+        </div>
+        <div class="duration">{{ flight.duration }}</div>
+        <div class="dest">
+          <span class="place"> {{ flight.destination }} </span>
+          <span class="time">{{ flight.arrtime }}</span>
+        </div>
+        <div class="price">Rs.{{ flight.fare.totalfare }}</div>
+        <button class="btn btn-warning"
+          (click)='onBook(i)'
+          *ngIf='!flightRetDetails || flightRetDetails.length === 0'>BOOK</button>
+          <!-- TODO:remove inline styles -->
+        <div class="text-center"
+          *ngIf='flightRetDetails && flightRetDetails.length !== 0'>
+          <input
+            type="radio"
+            name="flight"
+            id="flight"
+            [value]=i
+            (change)="updateTotalFare(i, 0)"/>
+        </div>
+      </div>
+    </div>
+
+    <div class="retFlightDet">
+      <div class="flight"
+        *ngFor="let flight of flightRetDetails | sort:sortRetCol:sortRetDir; let i = index">
+        <div class="brand"> {{ flight.ibibopartner | uppercaseCus }} </div>
+        <div class="src">
+          <span class="place"> {{ flight.origin }} </span>
+          <span class="time">{{ flight.deptime }}</span>
+        </div>
+        <div class="duration">{{ flight.duration }}</div>
+        <div class="dest">
+          <span class="place"> {{ flight.destination }} </span>
+          <span class="time">{{ flight.arrtime }}</span>
+        </div>
+        <div class="price">Rs.{{ flight.fare.totalfare }}</div>
+        <div style="text-align: center">
+          <input type="radio"
+            name="retFlight"
+            id="retFlight"
+            [value]=i
+            (change)="updateTotalFare(i, 1)"/>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

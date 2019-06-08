@@ -1,0 +1,56 @@
+.inlineFlex {
+  display: inline-flex;
+}
+
+.flights {
+  background: rgba(52, 58, 64, 0.5);
+  width: 100%;
+  padding: 20px;
+}
+
+.home .radioBtns {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+
+.home .rbtnsInlineFlex{
+  border: 1px solid;
+  border-radius: 30px;
+  background: white;
+}
+
+.home input[type="radio"] {
+  display: none;
+}
+
+label.radio {
+  margin-right: 20px;
+}
+
+.home label.radio {
+  padding: 10px 50px;
+  border-radius: 30px;
+  cursor: pointer;
+  margin: 0;
+  color: #647a97;
+}
+
+.home input:checked + label {
+  background: #2276e3;
+  color: white;
+}
+
+.searchInputsContainerFlex {
+  display: flex;
+}
+
+
+
+.row {
+  margin: 20px auto;
+}
+
+.flights .row.tripType {
+  padding-left: 4%;
+}

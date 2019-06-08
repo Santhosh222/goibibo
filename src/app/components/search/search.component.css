@@ -1,0 +1,19 @@
+.row {
+  margin: 30px auto;
+  text-align: center;
+}
+
+.headingSearch {
+  text-align: center;
+  color: azure;
+}
+
+.fluid-container {
+  min-height: 100vh;
+  min-width: 100vw;
+  background: url("../../../assets/flightbg.jpeg") center/cover;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}

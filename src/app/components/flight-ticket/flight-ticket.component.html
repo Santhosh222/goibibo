@@ -1,0 +1,14 @@
+<p></p>
+<!-- TODO:use common variable and  reduce redundant code -->
+<h2>Ticket booked successfully!</h2>
+<div *ngFor="let selectedFlight of flights" class="flightDet">
+  <div class="partner"> Flight : {{ selectedFlight.ibibopartner | uppercaseCus }} </div>
+  <div class="source"> Source : {{ selectedFlight.origin }} </div>
+  <div class="destination"> Destination : {{ selectedFlight.destination }} </div>
+  <div class="arrTime"> Departure time : {{ selectedFlight.deptime }} </div>
+  <div class="destTime"> Arrival time : {{ selectedFlight.arrtime }} </div>
+  <div class="price"> Price : {{ selectedFlight.fare.totalfare }} </div>
+</div>
+<div *ngIf="totalFare !== 0">
+  Total price : Rs.{{ totalFare }}
+</div>
