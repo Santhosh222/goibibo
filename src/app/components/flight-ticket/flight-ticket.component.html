@@ -1,14 +1,48 @@
 <p></p>
 <!-- TODO:use common variable and  reduce redundant code -->
-<h2>Ticket booked successfully!</h2>
-<div *ngFor="let selectedFlight of flights" class="flightDet">
-  <div class="partner"> Flight : {{ selectedFlight.ibibopartner | uppercaseCus }} </div>
-  <div class="source"> Source : {{ selectedFlight.origin }} </div>
-  <div class="destination"> Destination : {{ selectedFlight.destination }} </div>
-  <div class="arrTime"> Departure time : {{ selectedFlight.deptime }} </div>
-  <div class="destTime"> Arrival time : {{ selectedFlight.arrtime }} </div>
-  <div class="price"> Price : {{ selectedFlight.fare.totalfare }} </div>
-</div>
-<div *ngIf="totalFare !== 0">
-  Total price : Rs.{{ totalFare }}
+<!-- <div class="container">
+  <h2 class="message">Ticket booked successfully!</h2>
+  <div class="ticketDetails">
+    <div *ngFor="let selectedFlight of flights" class="flightDet">
+      <div class="partner"> Flight : {{ selectedFlight.ibibopartner | uppercaseCus }} </div>
+      <div class="source"> Source : {{ selectedFlight.origin }} </div>
+      <div class="destination"> Destination : {{ selectedFlight.destination }} </div>
+      <div class="arrTime"> Departure time : {{ selectedFlight.deptime }} </div>
+      <div class="destTime"> Arrival time : {{ selectedFlight.arrtime }} </div>
+    </div>
+    <div *ngIf="totalFare !== 0">
+      Total price : Rs.{{ totalFare }}
+    </div>
+  </div>
+</div> -->
+
+<div class="fluid-container">
+  <h2 class="message">Ticket booked successfully!</h2>
+  <div class="ticketDetails">
+    <div *ngFor="let selectedFlight of flights" class="flightDet">
+<!--       <div class="partner"> {{ selectedFlight.ibibopartner | uppercaseCus }} </div>
+      <div class="source"> {{ selectedFlight.origin }} </div>
+      <div class="destination"> {{ selectedFlight.destination }} </div>
+      <div class="arrTime"> {{ selectedFlight.deptime }} </div>
+      <div class="destTime"> {{ selectedFlight.arrtime }} </div> -->
+      <div class="partner"> {{ selectedFlight.ibibopartner | uppercaseCus }} </div>
+      <div class="source">
+        <div class="day"> {{ selectedFlight.fromDate }} </div>
+        <span class="place">{{ selectedFlight.origin }}</span>
+        <span class="time">{{ selectedFlight.deptime }}</span>
+      </div>
+      <div class="duration">
+        <span class="circle icon"><i class="fas fa-circle"></i></span>
+        <span class="timeDur">
+          <span>{{ selectedFlight.duration }}</span>
+        </span>
+        <span class="flightTo icon"><i class="fas fa-fighter-jet"></i></span>
+      </div>
+      <div class="destination">
+        <div class="day"> {{ selectedFlight.toDate }} </div>
+        <span class="place">{{ selectedFlight.destination }}</span>
+        <span class="time">{{ selectedFlight.arrtime }}</span>
+      </div>
+    </div>
+  </div>
 </div>

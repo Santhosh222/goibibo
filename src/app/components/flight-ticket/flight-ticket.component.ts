@@ -1,3 +1,4 @@
+import { DateUtil } from './../../util/DateUtil';
 import { FlightService } from '../../services/flight.service';
 import { Component, OnInit } from '@angular/core';
 
@@ -11,19 +12,28 @@ export class FlightTicketComponent implements OnInit {
   selectedFlight: any = {};
   selectedRetFlight: any = {};
   flights = [];
-  totalFare = 0;
+  // totalFare = 0;
 
-  constructor(private flightService: FlightService) { }
+  constructor(private flightService: FlightService,
+              private dateUtil: DateUtil) { }
 
   ngOnInit() {
+    const tripDates = {fromDate: null, toDate: null};
     this.selectedFlight = this.flightService.getSelectedFlight();
     if (this.selectedFlight !== undefined) {
-      this.flights.push(this.selectedFlight);
+      tripDates.fromDate = this.dateUtil.formatDate(this.selectedFlight.depdate);
+      tripDates.toDate = this.dateUtil.formatDate(this.selectedFlight.arrdate);
+      this.flights.push({...this.selectedFlight, ...tripDates});
+      console.log({...this.selectedFlight, ...tripDates});
+      // this.totalFare += this.selectedFlight.fare.totalfare;
     }
     this.selectedRetFlight = this.flightService.getRetSelectedFlight();
     if (this.selectedRetFlight !== undefined) {
-      this.flights.push(this.selectedRetFlight);
-      this.totalFare = this.selectedFlight.fare.totalfare + this.selectedRetFlight.fare.totalfare;
+      tripDates.fromDate = this.dateUtil.formatDate(this.selectedRetFlight.depdate);
+      tripDates.toDate = this.dateUtil.formatDate(this.selectedRetFlight.arrdate);
+      this.flights.push({...this.selectedRetFlight, ...tripDates});
+      console.log({...this.selectedRetFlight, ...tripDates});
+      // this.totalFare += this.selectedRetFlight.fare.totalfare;
     }
   }
 

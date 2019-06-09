@@ -1,3 +1,4 @@
+import { DateUtil } from './util/DateUtil';
 import { ErrorPageCusComponent } from './components/error-page-cus/error-page-cus.component';
 import { HttpClientModule } from '@angular/common/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -14,6 +15,9 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { SearchBarComponent } from './components/search-bar/search-bar.component';
 import { UppercaseCusPipe } from './pipes/uppercase-cus.pipe';
 import { SortPipe } from './pipes/sort.pipe';
+
+
+import { CookieService } from 'ngx-cookie-service';
 
 @NgModule({
   declarations: [
@@ -35,7 +39,7 @@ import { SortPipe } from './pipes/sort.pipe';
     BrowserAnimationsModule,
     HttpClientModule
   ],
-  providers: [],
+  providers: [DateUtil, CookieService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

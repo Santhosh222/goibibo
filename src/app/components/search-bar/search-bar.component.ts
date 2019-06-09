@@ -1,3 +1,4 @@
+import { CookieService } from 'ngx-cookie-service';
 import { Component, OnInit, ViewChild, Input } from '@angular/core';
 import { NgForm, FormGroup, FormControl, Validators } from '@angular/forms';
 import { FlightService } from '../../services/flight.service';
@@ -15,40 +16,46 @@ export class SearchBarComponent implements OnInit {
   @Input() parent: string;
 
   searchForm: FormGroup;
-  // TODO: use constants file
   tripTypes = appConstants['tripTypes'];
-  selectedTripType = appConstants['defaultTripType'];
+  selectedTripType = '';
 
   minDepDate = this.getMinDate();
 
   constructor(private httpClient: HttpClient,
               private flightService: FlightService,
-              private router: Router) { }
+              private router: Router,
+              private cookieService: CookieService) { }
 
   ngOnInit() {
     if (this.parent === 'flights') {
       this.tripTypes = ['OneWay', 'RoundTrip'];
     }
+
+    // Check if cookies are present
+    const formData = this.cookieService.get('formData') !== null ? JSON.parse(this.cookieService.get('formData')) : {};
+
+    this.selectedTripType = formData['tripType'] !== undefined ? formData['tripType'] : appConstants['defaultTripType'];
+
     this.searchForm = new FormGroup({
-      source: new FormControl('MAA', Validators.required),
-      destination: new FormControl('DEL', Validators.required),
-      departure: new FormControl(null, Validators.required),
-      return: new FormControl(null, this.returnValidator.bind(this)),
-      seatingclass: new FormControl('E', Validators.required),
-      adults: new FormControl('1', Validators.required),
-      tripType: new FormControl('OneWay', Validators.required)
+      source: new FormControl(formData['source'], Validators.required),
+      destination: new FormControl(formData['destination'], Validators.required),
+      departure: new FormControl(formData['departure'], Validators.required),
+      return: new FormControl(formData['return'], this.returnValidator.bind(this)),
+      seatingclass: new FormControl(formData['seatingclass'], Validators.required),
+      adults: new FormControl(formData['adults'], Validators.required),
+      tripType: new FormControl(this.selectedTripType, Validators.required)
     });
   }
 
   onSubmit() {
     console.log(this.searchForm.value);
-// TODO: better names for variables
+
+    // Setting cookie formData for 2 hours
+    this.cookieService.set('formData', JSON.stringify(this.searchForm.value), 2);
+
     const returnDate = this.searchForm.value.return;
     const dod = (this.searchForm.value.departure as string).replace(/-/g, '');
     const doa = ( returnDate ? (returnDate as string).replace(/-/g, '') : '');
-
-    // this.searchForm.value;
-// TODO: move to constants file
 
     const params = {
       app_id: appConstants['app_id'],
@@ -62,11 +69,9 @@ export class SearchBarComponent implements OnInit {
 
     console.log('Params : ', params);
 
-// TODO: move to constants file
     const response = this.httpClient
       .get(appConstants['goibibourl'], {params})
       .subscribe((response: any) => {
-        // console.log(response);
         const arr: any[] = (response.data.onwardflights as Array<any>).splice(0, 5);
         console.log(arr);
         this.flightService.setFlightDetails(arr);
