@@ -1,6 +1,7 @@
 <form (ngSubmit)="onSubmit()"
       [formGroup]="searchForm"
-      [ngClass] = "{home : parent !== 'flights', flights: parent === 'flights'}">
+      [ngClass] = "{home : parent !== 'flights', flights: parent === 'flights'}"
+      autocomplete="off">
   <div class="row tripType">
     <div class="radioBtns">
       <div class="inlineFlex rbtnsInlineFlex">
@@ -23,18 +24,38 @@
       <div class="searchInputsContainerFlex">
         <div class="inlineFlex searchInputsContainerInlineFlex">
           <div class="col-sm-2">
+            <datalist id = "srcPlaces">
+              <!-- <option value="MAA"></option>
+              <option value="DEL"></option>
+              <option value="BOM"></option> -->
+              <option
+                *ngFor="let place of srcPlaces"
+                [value]="place"> {{ place }} </option>
+            </datalist>
             <input type="text"
               class="form-control"
               placeholder="From"
+              list="srcPlaces"
               name="source"
-              formControlName="source"/>
+              formControlName="source"
+              (change)="updateDstPlaces($event)"/>
           </div>
           <div class="col-sm-2">
+            <datalist id = "dstPlaces">
+              <!-- <option value="MAA"></option>
+              <option value="DEL"></option>
+              <option value="BOM"></option> -->
+              <option
+                *ngFor="let place of dstPlaces"
+                [value]="place"> {{ place }} </option>
+            </datalist>
             <input type="text"
               class="form-control"
               placeholder="Destination"
+              list="dstPlaces"
               name="destination"
-              formControlName="destination"/>
+              formControlName="destination"
+              (change)="updateSrcPlaces($event)"/>
           </div>
           <div class="col-sm-1.5">
             <input type="date"
@@ -43,6 +64,7 @@
               name="departure"
               formControlName="departure"
               [min]="minDepDate"
+              (change)="changeMinRetDate($event)"
               #departure/>
           </div>
           <div class="col-sm-1.5"
@@ -52,7 +74,8 @@
               placeholder="Return"
               name="return"
               formControlName="return"
-              [min]="departure.value"/>
+              [min]="departure.value"
+              #returndate/>
           </div>
           <div class="col-sm-2">
             <select

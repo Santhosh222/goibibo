@@ -38,7 +38,7 @@ export class FlightsComponent implements OnInit, OnDestroy {
     console.log('FlightDetails : ', this.flightDetails);
 
     this.flightRetDetails = this.flightService.getRetFlightDetails();
-    // TODO:make this a subbscription and unsusribe on ngdestroy
+    // TODO:make this a subscription and unsusribe on ngdestroy
     this.flightsSubscription = this.flightService.flightsRetSearch
       .subscribe(flightRetDetails => this.flightRetDetails = flightRetDetails);
     console.log('Return flight details : ', this.flightRetDetails);
@@ -74,6 +74,7 @@ export class FlightsComponent implements OnInit, OnDestroy {
     // console.log(index, this.flightDetails[index]);
     if (index !== undefined) {
       this.flightService.setSelectedFlight(this.flightDetails[index]);
+      this.flightService.setRetSelectedFlight(undefined);
     } else {
       this.flightService.setSelectedFlight(this.flightDetails[this.flightsIndices[0]]);
       this.flightService.setRetSelectedFlight(this.flightRetDetails[this.flightsIndices[1]]);

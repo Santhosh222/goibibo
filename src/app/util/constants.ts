@@ -34,10 +34,6 @@ Object.defineProperties(appConstants, {
     writable: false
   },
 
-  /**
-   * util Constants file
-   */
-
   Airlines: {
     value: 'ibibopartner',
     writable: false
@@ -52,6 +48,11 @@ Object.defineProperties(appConstants, {
   },
   Arrival: {
     value: 'arrtime',
+    writable: false
+  },
+
+  places: {
+    value: ['MAA', 'DEL', 'BOM'],
     writable: false
   }
 });

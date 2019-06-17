@@ -1,5 +1,5 @@
 import { CookieService } from 'ngx-cookie-service';
-import { Component, OnInit, ViewChild, Input } from '@angular/core';
+import { Component, OnInit, ViewChild, Input, ElementRef } from '@angular/core';
 import { NgForm, FormGroup, FormControl, Validators } from '@angular/forms';
 import { FlightService } from '../../services/flight.service';
 import { Router } from '@angular/router';
@@ -14,17 +14,21 @@ import appConstants from '../../util/constants';
 export class SearchBarComponent implements OnInit {
 
   @Input() parent: string;
+  @ViewChild('departure') depDate: string;
+  @ViewChild('returndate') retDate: ElementRef;
 
   searchForm: FormGroup;
   tripTypes = appConstants['tripTypes'];
   selectedTripType = '';
+  srcPlaces = appConstants['places'];
+  dstPlaces = appConstants['places'];
 
   minDepDate = this.getMinDate();
 
   constructor(private httpClient: HttpClient,
               private flightService: FlightService,
               private router: Router,
-              private cookieService: CookieService) { }
+              private cookieService: CookieService) {  }
 
   ngOnInit() {
     if (this.parent === 'flights') {
@@ -32,9 +36,11 @@ export class SearchBarComponent implements OnInit {
     }
 
     // Check if cookies are present
-    const formData = this.cookieService.get('formData') !== null ? JSON.parse(this.cookieService.get('formData')) : {};
+    console.log(this.cookieService.get('formData'));
+    const formData = this.cookieService.get('formData') !== '' ? JSON.parse(this.cookieService.get('formData')) : {};
 
     this.selectedTripType = formData['tripType'] !== undefined ? formData['tripType'] : appConstants['defaultTripType'];
+    // console.log('Trip type: ', formData['tripType'], appConstants['defaultTripType'], this.selectedTripType);
 
     this.searchForm = new FormGroup({
       source: new FormControl(formData['source'], Validators.required),
@@ -45,6 +51,7 @@ export class SearchBarComponent implements OnInit {
       adults: new FormControl(formData['adults'], Validators.required),
       tripType: new FormControl(this.selectedTripType, Validators.required)
     });
+
   }
 
   onSubmit() {
@@ -65,19 +72,21 @@ export class SearchBarComponent implements OnInit {
       dateofarrival: doa,
       counter: appConstants['counter'],
       ...this.searchForm.value
-    }
+    };
 
     console.log('Params : ', params);
 
     const response = this.httpClient
       .get(appConstants['goibibourl'], {params})
       .subscribe((response: any) => {
-        const arr: any[] = (response.data.onwardflights as Array<any>).splice(0, 5);
+        const arr: any[] = response.data.onwardflights  !== undefined ? (response.data.onwardflights as Array<any>).splice(0, 5) : null;
         console.log(arr);
         this.flightService.setFlightDetails(arr);
         this.flightService.flightsSearch.next(arr);
-        if (doa !== '') {
-          const retArr: any[] = (response.data.returnflights as Array<any>).splice(0, 5);
+        this.flightService.setRetFlightDetails([]);
+        this.flightService.flightsRetSearch.next([]);
+        if (this.selectedTripType !== 'OneWay') {
+          const retArr: any[] = response.data.returnflights !== undefined ? (response.data.returnflights as Array<any>).splice(0, 5) : null;
           console.log('Return flights: ' + retArr);
           this.flightService.setRetFlightDetails(retArr);
           this.flightService.flightsRetSearch.next(retArr);
@@ -104,5 +113,23 @@ export class SearchBarComponent implements OnInit {
       return { returnVal: true };
     }
     return null;
+  }
+
+  updateSrcPlaces(event) {
+    console.log('updateSrcPlaces ', event.target.value);
+    this.srcPlaces = appConstants['places'].filter(place => place !== event.target.value);
+  }
+
+  updateDstPlaces(event) {
+    console.log('updateDstPlaces ', event.target.value);
+    this.dstPlaces = appConstants['places'].filter(place => place !== event.target.value);
+  }
+
+  changeMinRetDate(event) {
+    console.log('changeMinRetDate function', event.target.value, this.retDate.nativeElement.value);
+    if (event.target.value > this.retDate.nativeElement.value) {
+      // this.searchForm.patchValue({return: event.target.value});
+      this.searchForm.patchValue({return: null});
+    }
   }
 }
